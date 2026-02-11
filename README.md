@@ -1,4 +1,4 @@
-# MPC-CLI - MIDI Sampler & Sequencer
+# MPC-CLI - Command-line Sampler & Sequencer
 
 A real-time audio sampler and sequencer with pitch-shifting capabilities. Play samples, record sequences, and perform with pitched melodies - all from your keyboard. Built with C++20, GStreamer, and macOS CoreGraphics.
 
