@@ -1,0 +1,3 @@
+/Users/matheussilva/code/cpp-test/build/CMakeFiles/cpptestbin.dir
+/Users/matheussilva/code/cpp-test/build/CMakeFiles/edit_cache.dir
+/Users/matheussilva/code/cpp-test/build/CMakeFiles/rebuild_cache.dir

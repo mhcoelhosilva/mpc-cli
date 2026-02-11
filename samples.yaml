@@ -1,0 +1,29 @@
+samples:
+  kick_drum:
+    path: 'samples/kick.wav'
+    key: a
+    volume: 1.0
+  snare:
+    path: 'samples/snare.wav'
+    key: s
+    volume: 0.8
+  hihat:
+    path: 'samples/hihat.wav'
+    key: d
+    volume: 0.6
+  crash:
+    path: 'samples/crash.wav'
+    key: f
+    volume: 0.3
+  tom1:
+    path: 'samples/tom1.wav'
+    key: g
+    volume: 0.9
+  tom2:
+    path: 'samples/tom2.wav'
+    key: h
+    volume: 0.9
+  bass:
+    path: 'samples/bass.wav'
+    key: j
+    volume: 1.0

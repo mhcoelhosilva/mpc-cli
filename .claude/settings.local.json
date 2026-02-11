@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkg-config:*)",
+      "Bash(brew install:*)",
+      "Bash(timeout:*)",
+      "Bash(cmake:*)",
+      "Bash(brew list:*)",
+      "Bash(brew search:*)",
+      "Bash(gst-inspect-1.0:*)",
+      "Bash(brew info:*)"
+    ]
+  }
+}
