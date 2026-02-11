@@ -56,6 +56,7 @@ A real-time audio sampler and sequencer with pitch-shifting capabilities. Play s
 - **CMake** 3.15.3 or higher
 - **GStreamer** 1.4 or higher
 - **C++20** compiler (Clang/GCC)
+- **YAML-cpp**
 
 ## Installation
 
