@@ -5,9 +5,9 @@
 #include <functional>
 
 struct SequencePoint {
-  char _key;
-  std::chrono::duration<double> _timeFromStart;
-  double _pitch;  // Pitch in semitones (0 = original)
+  char key_;
+  std::chrono::duration<double> time_from_start_;
+  double pitch_;  // Pitch in semitones (0 = original)
 };
 
 // Callback type for when a key should be triggered during playback
@@ -27,24 +27,23 @@ public:
 
   void tick();
 
-  bool isRecording() const { return _recording.load(); }
-  bool isPlaying() const { return _playing.load(); }
+  bool isRecording() const { return recording_.load(); }
+  bool isPlaying() const { return playing_.load(); }
 
 private:
-  std::atomic<bool> _playing;
-  std::atomic<bool> _recording;
+  std::atomic<bool> playing_;
+  std::atomic<bool> recording_;
 
-  std::chrono::time_point<std::chrono::system_clock> _sequenceRecordStartTime;
-  std::chrono::time_point<std::chrono::system_clock> _sequencePlayStartTime;
+  std::chrono::time_point<std::chrono::system_clock> sequence_record_start_time_;
+  std::chrono::time_point<std::chrono::system_clock> sequence_play_start_time_;
 
-  std::chrono::duration<double> _sequenceLength;
-  std::chrono::duration<double> _previousPlayPosition;
+  std::chrono::duration<double> sequence_length_;
+  std::chrono::duration<double> previous_play_position_;
 
-  std::atomic<size_t> _currentSequenceIndex;
-  size_t _currentIndex;  // Track last played note to avoid duplicates
+  size_t current_index_;  // Track last played note to avoid duplicates
 
-  std::mutex _sequencePointLock;
-  std::vector<SequencePoint> _sequencePoints;
+  std::mutex sequence_points_lock_;
+  std::vector<SequencePoint> sequence_points_;
 
-  KeyTriggerCallback _keyTriggerCallback;
+  KeyTriggerCallback key_trigger_callback_;
 };

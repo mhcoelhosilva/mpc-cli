@@ -5,81 +5,78 @@
 #include <algorithm>
 
 Sequencer::Sequencer(KeyTriggerCallback callback)
-    : _playing(false),
-      _recording(false),
-      _sequenceLength(std::chrono::duration<double>::zero()),
-      _previousPlayPosition(std::chrono::duration<double>::zero()),
-      _currentSequenceIndex(0),
-      _currentIndex(0),
-      _keyTriggerCallback(callback) {
+    : playing_(false),
+      recording_(false),
+      sequence_length_(std::chrono::duration<double>::zero()),
+      previous_play_position_(std::chrono::duration<double>::zero()),
+      current_index_(0),
+      key_trigger_callback_(callback) {
 }
 
 void Sequencer::toggleRecording() {
   const std::chrono::time_point<std::chrono::system_clock> now =
         std::chrono::system_clock::now();
-  if (_recording) {
+  if (recording_) {
     // Stop recording
-    _sequenceLength = now - _sequenceRecordStartTime;
-    _recording = false;
+    sequence_length_ = now - sequence_record_start_time_;
+    recording_ = false;
 
-    std::lock_guard<std::mutex> lk(_sequencePointLock);
+    std::lock_guard<std::mutex> lk(sequence_points_lock_);
 
     // Sort sequence points by time
-    std::sort(_sequencePoints.begin(), _sequencePoints.end(),
+    std::sort(sequence_points_.begin(), sequence_points_.end(),
               [](const SequencePoint& a, const SequencePoint& b) {
-                return a._timeFromStart < b._timeFromStart;
+                return a.time_from_start_ < b.time_from_start_;
               });
 
     // Automatically play
     togglePlaying();
   } else {
     // Start recording
-    _sequenceRecordStartTime = now;
-    _sequenceLength = std::chrono::duration<double>::zero();
+    sequence_record_start_time_ = now;
+    sequence_length_ = std::chrono::duration<double>::zero();
 
-    std::lock_guard<std::mutex> lk(_sequencePointLock);
-    _sequencePoints.clear();
+    std::lock_guard<std::mutex> lk(sequence_points_lock_);
+    sequence_points_.clear();
 
-    _recording = true;
+    recording_ = true;
   }
 }
 
 void Sequencer::recordKey(char key, double pitch) {
-  if (!_recording) {
+  if (!recording_) {
     return;
   }
 
   const std::chrono::time_point<std::chrono::system_clock> now =
         std::chrono::system_clock::now();
-  std::chrono::duration<double> timeSinceStart = now - _sequenceRecordStartTime;
+  std::chrono::duration<double> timeSinceStart = now - sequence_record_start_time_;
   SequencePoint pt = { key, timeSinceStart, pitch };
 
-  std::lock_guard<std::mutex> lk(_sequencePointLock);
-  _sequencePoints.push_back(pt);
+  std::lock_guard<std::mutex> lk(sequence_points_lock_);
+  sequence_points_.push_back(pt);
 }
 
 void Sequencer::togglePlaying() {
   const std::chrono::time_point<std::chrono::system_clock> now =
         std::chrono::system_clock::now();
 
-  if (_playing) {
+  if (playing_) {
     // Stop playing
-    _currentSequenceIndex = 0;
-    _previousPlayPosition = std::chrono::duration<double>(-0.001);
-    _playing = false;
+    previous_play_position_ = std::chrono::duration<double>(-0.001);
+    playing_ = false;
   } else {
     // Start playing
-    _sequencePlayStartTime = now;
-    _currentSequenceIndex = 0;
-    _currentIndex = 0;
+    sequence_play_start_time_ = now;
+    current_index_ = 0;
     // Initialize to small negative value to ensure notes at time 0 trigger
-    _previousPlayPosition = std::chrono::duration<double>(-0.001);
-    _playing = true;
+    previous_play_position_ = std::chrono::duration<double>(-0.001);
+    playing_ = true;
   }
 }
 
 void Sequencer::tick() {
-  if (!_playing) {
+  if (!playing_) {
     return;
   }
 
@@ -87,46 +84,46 @@ void Sequencer::tick() {
         std::chrono::system_clock::now();
 
   // Calculate current position using floating-point for precision
-  std::chrono::duration<double> timeSinceStart = now - _sequencePlayStartTime;
-  double sequenceLength = _sequenceLength.count();
+  std::chrono::duration<double> time_since_start = now - sequence_play_start_time_;
+  double sequence_length = sequence_length_.count();
 
   // Handle empty or zero-length sequence
-  if (sequenceLength <= 0.0 || _sequencePoints.empty()) {
+  if (sequence_length <= 0.0 || sequence_points_.empty()) {
     return;
   }
 
   // Wrap using floating-point modulo to maintain precision
-  double wrappedTime = std::fmod(timeSinceStart.count(), sequenceLength);
-  auto currentPosition = std::chrono::duration<double>(wrappedTime);
+  double wrapped_time = std::fmod(time_since_start.count(), sequence_length);
+  auto current_position = std::chrono::duration<double>(wrapped_time);
 
-  std::lock_guard<std::mutex> lk(_sequencePointLock);
+  std::lock_guard<std::mutex> lk(sequence_points_lock_);
 
   // Check if we wrapped around (looped back to the start)
-  bool wrapped = currentPosition < _previousPlayPosition;
+  bool wrapped = current_position < previous_play_position_;
 
   if (wrapped) {
     // Reset index when we loop back to start
-    _currentIndex = 0;
+    current_index_ = 0;
   }
 
-  // Play all notes from _currentIndex onwards that should trigger now
-  // _currentIndex represents the next note to play
+  // Play all notes from current_index_ onwards that should trigger now
+  // current_index_ represents the next note to play
   // Since points are sorted by time, we can iterate sequentially
-  while (_currentIndex < _sequencePoints.size()) {
-    const auto& pt = _sequencePoints[_currentIndex];
+  while (current_index_ < sequence_points_.size()) {
+    const auto& pt = sequence_points_[current_index_];
 
     // Check if this note should play at current position
-    if (pt._timeFromStart <= currentPosition) {
-      if (_keyTriggerCallback) {
-        _keyTriggerCallback(pt._key, pt._pitch);
+    if (pt.time_from_start_ <= current_position) {
+      if (key_trigger_callback_) {
+        key_trigger_callback_(pt.key_, pt.pitch_);
       }
 
-      _currentIndex++;  // Move to next note
+      current_index_++;  // Move to next note
     } else {
       // Since points are sorted, no more notes to play this tick
       break;
     }
   }
 
-  _previousPlayPosition = currentPosition;
+  previous_play_position_ = current_position;
 }
