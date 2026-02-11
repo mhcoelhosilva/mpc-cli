@@ -8,7 +8,7 @@
 #include <functional>
 #include "../gstreamer/gst_pipeline.h"
 
-namespace cpptest {
+namespace mpccli {
 
 // Amplitude callback type for visualization
 using AmplitudeUpdateCallback = std::function<void(char key, float amplitude)>;
@@ -45,4 +45,4 @@ class AudioProcessor {
   mutable std::mutex mutex_;
 };
 
-}  // namespace cpptest
+}  // namespace mpccli

@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <cmath>
 
-namespace cpptest {
+namespace mpccli {
 
 AudioPipeline::AudioPipeline(const std::string& file_path, CompletionCallback callback, double volume)
     : file_path_(file_path),
@@ -330,4 +330,4 @@ gboolean AudioPipeline::busCallback(GstBus* bus, GstMessage* message, gpointer u
   return TRUE;
 }
 
-}  // namespace cpptest
+}  // namespace mpccli

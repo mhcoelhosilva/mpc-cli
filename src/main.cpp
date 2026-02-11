@@ -11,7 +11,7 @@
 #include "visualizer/wave_visualizer.h"
 #include "sequencer/sequencer.h"
 
-using namespace cpptest;
+using namespace mpccli;
 
 static KeyboardInput* g_keyboard_input = nullptr;
 static volatile sig_atomic_t signal_received = 0;
@@ -108,7 +108,7 @@ int getPitchOffset(char key) {
 }
 
 int main(int argc, char* argv[]) {
-  std::cout << "Starting cpp-test audio sampler..." << std::endl;
+  std::cout << "Starting mpc-cli audio sampler..." << std::endl;
 
   // Set environment variables to speed up GStreamer initialization
   setenv("GST_REGISTRY_UPDATE", "no", 0);  // Don't update registry on every run

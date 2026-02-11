@@ -3,7 +3,7 @@
 #import <Carbon/Carbon.h>
 #import <CoreFoundation/CoreFoundation.h>
 
-namespace cpptest {
+namespace mpccli {
 
 // C callback wrapper for the event tap
 CGEventRef eventTapCallbackC(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void* user_data) {
@@ -196,4 +196,4 @@ void KeyboardInput::stop() {
   run_loop_ = nullptr;
 }
 
-}  // namespace cpptest
+}  // namespace mpccli

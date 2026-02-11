@@ -5,7 +5,7 @@
 #include <mutex>
 #include <atomic>
 
-namespace cpptest {
+namespace mpccli {
 
 // Terminal-based waveform visualizer
 // Displays amplitude bars for each sample in real-time
@@ -56,4 +56,4 @@ class WaveVisualizer {
   static constexpr int LABEL_WIDTH = 20;
 };
 
-}  // namespace cpptest
+}  // namespace mpccli

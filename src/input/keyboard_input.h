@@ -3,7 +3,7 @@
 #include <functional>
 #include <CoreGraphics/CoreGraphics.h>
 
-namespace cpptest {
+namespace mpccli {
 
 // Callback type for key press events
 // Parameters: char key, bool shift_pressed
@@ -39,4 +39,4 @@ class KeyboardInput {
   bool running_;
 };
 
-}  // namespace cpptest
+}  // namespace mpccli

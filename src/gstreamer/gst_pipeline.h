@@ -5,7 +5,7 @@
 #include <string>
 #include <functional>
 
-namespace cpptest {
+namespace mpccli {
 
 // Low-latency audio pipeline using filesrc with aggressive optimizations
 // Pipeline stays in PAUSED state (pre-buffered) for instant playback
@@ -71,4 +71,4 @@ class AudioPipeline {
   double pitch_semitones_;
 };
 
-}  // namespace cpptest
+}  // namespace mpccli

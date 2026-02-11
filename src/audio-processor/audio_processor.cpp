@@ -1,7 +1,7 @@
 #include "audio_processor.h"
 #include <iostream>
 
-namespace cpptest {
+namespace mpccli {
 
 AudioProcessor::~AudioProcessor() {
   // Copy the pipelines and release the lock before stopping them
@@ -111,4 +111,4 @@ bool AudioProcessor::playSampleWithPitch(char key, double semitones) {
   }
 }
 
-}  // namespace cpptest
+}  // namespace mpccli

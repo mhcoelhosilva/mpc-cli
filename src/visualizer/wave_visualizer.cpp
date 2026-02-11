@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <cmath>
 
-namespace cpptest {
+namespace mpccli {
 
 WaveVisualizer::WaveVisualizer()
     : running_(false), is_recording_(false), is_playing_(false),
@@ -205,4 +205,4 @@ void WaveVisualizer::drawSequencerStatus() {
   std::cout << "\033[J";
 }
 
-}  // namespace cpptest
+}  // namespace mpccli
