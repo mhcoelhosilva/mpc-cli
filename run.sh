@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build the project
-echo "Building cpp-test..."
+echo "Building mpc-cli..."
 cd "$(dirname "$0")"
 mkdir -p build
 cd build
@@ -28,6 +28,6 @@ echo "========================================"
 echo ""
 
 # Run the executable from project root (so it finds samples/ directory)
-echo "Starting cpptestbin..."
+echo "Starting mpc-cli..."
 cd ..
-./build/cpptestbin
+./build/mpc-cli

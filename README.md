@@ -68,7 +68,7 @@ brew install gstreamer
 ### 2. Build the Project
 
 ```bash
-cd cpp-test
+cd mpc-cli
 ./run.sh
 ```
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15.3)
-project(cpptest)
+project(mpc-cli)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -36,10 +36,10 @@ set(SOURCES
 )
 
 # Create executable
-add_executable(cpptestbin ${SOURCES})
+add_executable(mpc-cli ${SOURCES})
 
 # Link libraries
-target_link_libraries(cpptestbin
+target_link_libraries(mpc-cli
   ${GSTREAMER_LIBRARIES}
   ${GSTREAMER_APP_LIBRARIES}
   ${YAMLCPP_LIBRARIES}
@@ -48,7 +48,7 @@ target_link_libraries(cpptestbin
 )
 
 # Compiler flags
-target_compile_options(cpptestbin PRIVATE
+target_compile_options(mpc-cli PRIVATE
   ${GSTREAMER_CFLAGS_OTHER}
   ${GSTREAMER_APP_CFLAGS_OTHER}
 )
