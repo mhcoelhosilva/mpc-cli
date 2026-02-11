@@ -59,10 +59,10 @@ A real-time audio sampler and sequencer with pitch-shifting capabilities. Play s
 
 ## Installation
 
-### 1. Install GStreamer
+### 1. Install Dependencies
 
 ```bash
-brew install gstreamer
+brew install cmake yaml-cpp gstreamer
 ```
 
 ### 2. Build the Project
@@ -78,7 +78,7 @@ This will build and run the application.
 
 ### samples.yaml
 
-Audio samples are configured in `samples.yaml`. Each sample has:
+Audio samples are configured in `samples.yaml`. Each sample has a name, a `path` (relative to root `mpc-cli` directory), an associated `key`, and a relative `volume` (0.0 to 1.0).
 
 ```yaml
 samples:

@@ -9,7 +9,6 @@ AudioPipeline::AudioPipeline(const std::string& file_path, CompletionCallback ca
     : file_path_(file_path),
       pipeline_(nullptr),
       volume_element_(nullptr),
-      pitch_element_(nullptr),
       bus_(nullptr),
       bus_watch_id_(0),
       completion_callback_(std::move(callback)),
@@ -34,7 +33,7 @@ AudioPipeline::AudioPipeline(const std::string& file_path, CompletionCallback ca
 }
 
 AudioPipeline::~AudioPipeline() {
-  stop();
+  destroy();
 }
 
 bool AudioPipeline::createPipeline() {
@@ -42,11 +41,13 @@ bool AudioPipeline::createPipeline() {
     return true;
   }
 
-  // Create optimized low-latency pipeline with volume control
-  // filesrc loads from disk (fast for small files)
-  // decodebin auto-detects format
-  // volume element for volume control
-  // Direct to low-latency audio sink
+  // Create optimized low-latency pipeline with volume control.
+  // This is done only once on startup. Each time the sample is
+  // played, we simply seek to the beginning of the sample and set state to PLAYING again.
+  // -> filesrc loads from disk (fast for small files)
+  // -> decodebin auto-detects format
+  // -> volume element for volume control
+  // -> Direct to low-latency audio sink (osxaudiosink)
   // NOTE: Pitch shifting will be done via playback rate (changes pitch + tempo together)
   std::string pipeline_desc =
       std::string("filesrc location=\"") + file_path_ + "\" ! " +
@@ -68,10 +69,6 @@ bool AudioPipeline::createPipeline() {
   bus_ = gst_element_get_bus(pipeline_);
   bus_watch_id_ = gst_bus_add_watch(bus_, busCallback, this);
   gst_object_unref(bus_);
-
-  // Note: pitch_element_ is not used (no pitch plugin available)
-  // Pitch shifting is done via playback rate in setPitch()
-  pitch_element_ = nullptr;
 
   // Get the volume element and set initial volume
   volume_element_ = gst_bin_get_by_name(GST_BIN(pipeline_), "volume");
@@ -173,7 +170,7 @@ bool AudioPipeline::start() {
   return true;
 }
 
-void AudioPipeline::stop() {
+void AudioPipeline::destroy() {
   if (!pipeline_) {
     return;
   }
@@ -184,12 +181,6 @@ void AudioPipeline::stop() {
   if (bus_watch_id_ > 0) {
     g_source_remove(bus_watch_id_);
     bus_watch_id_ = 0;
-  }
-
-  // Release pitch element reference
-  if (pitch_element_) {
-    gst_object_unref(pitch_element_);
-    pitch_element_ = nullptr;
   }
 
   // Release volume element reference

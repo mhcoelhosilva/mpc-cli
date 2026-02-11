@@ -15,7 +15,7 @@ AudioProcessor::~AudioProcessor() {
   // Now stop all pipelines without holding the lock
   for (auto& [key, pipeline] : pipelines_to_stop) {
     if (pipeline) {
-      pipeline->stop();
+      pipeline->destroy();
     }
   }
 }

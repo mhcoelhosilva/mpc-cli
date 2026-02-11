@@ -29,7 +29,7 @@ class AudioPipeline {
   bool start();
 
   // Stop and destroy the pipeline
-  void stop();
+  void destroy();
 
   // Check if pipeline is playing
   bool isPlaying() const;
@@ -53,13 +53,12 @@ class AudioPipeline {
   // Calculate RMS amplitude from audio buffer
   float calculateRMS(GstBuffer* buffer);
 
-  // Create the GStreamer pipeline (called once in constructor)
+  // Create the GStreamer pipeline (called only once in constructor)
   bool createPipeline();
 
   std::string file_path_;
   GstElement* pipeline_;
   GstElement* volume_element_;
-  GstElement* pitch_element_;
   GstBus* bus_;
   guint bus_watch_id_;
   CompletionCallback completion_callback_;
